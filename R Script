@@ -1,0 +1,49 @@
+###This code was adapted from Cory Nissen to use with this project###
+
+install.packages('rjson')
+install.packages('RCurl')
+install.packages('httr')
+
+library(rjson)
+library(RCurl)
+library(httr)
+
+modelname="Model11"
+
+###Authentication###
+client_id <- "XXX.apps.googleusercontent.com"
+client_secret <- "XXX"
+redirect_uri <- "XXX"
+auth_url <- "https://accounts.google.com/o/oauth2/auth"
+scope <- "https://www.googleapis.com/auth/prediction"
+api_key <- "XXX"
+
+code_url <- paste0(auth_url, "?client_id=", client_id, "&redirect_uri=",
+                   redirect_uri, "&response_type=code&scope=", scope)
+browseURL(code_url)
+
+###PASTE the authentication code here###
+code <- "XXX"
+token.curl.request <- paste0('curl -k --header "Content-Type: application/x-www-form-urlencoded" --data "code=',
+                             code, '&client_id=', client_id, '&client_secret=',
+                             client_secret, '&redirect_uri=', redirect_uri,
+                             '&grant_type=authorization_code',
+                             '" https://accounts.google.com/o/oauth2/token')
+token <- system(token.curl.request, intern=T)
+token_code <- fromJSON(paste(token, collapse=""))$access_token
+
+
+
+
+###Model summary###
+
+modelrequest <- paste0('curl -k --header "Content-Type: application/json"  -H "Authorization: Bearer ', token_code, '" https://www.googleapis.com/prediction/v1.6/projects/prejectID/trainedmodels/',modelname,'?key=', api_key, " --verbose")
+system(modelrequest, intern=T)
+
+###Prediction###
+
+predictrequest <- paste0('curl -k --header "Content-Type: application/json" --data \'{"input":{"csvInstance":["CULEX PIPIENS","12","41.673408","-87.599862","7"]}}\' -H "Authorization: Bearer ', token_code, '" https://www.googleapis.com/prediction/v1.6/projects/projectID/trainedmodels/Model11/predict?key=', api_key, " --verbose")
+system(predictrequest, intern=T)
+
+
+
