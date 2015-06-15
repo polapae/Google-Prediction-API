@@ -1,4 +1,4 @@
-# API
+# Google Prediction API
 
 The merged West Nile Virus data has 32 variables and 10505 rows. 
 This dataset is the combination of weather and train that acquired from Kaggle competition.
